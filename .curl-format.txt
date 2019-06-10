@@ -1,0 +1,12 @@
+response_code:\t\t%{response_code}\n
+size_download:\t\t%{size_download} bytes\n
+speed_downdload:\t%{speed_download} bytes/s\n
+time_namelookup:\t%{time_namelookup}s\n
+time_connect:\t\t%{time_connect}s\n
+time_appconnect:\t%{time_appconnect}s\n
+time_pretransfer:\t%{time_pretransfer}s\n
+time_redirect:\t\t%{time_redirect}s\n
+time_starttransfer:\t%{time_starttransfer}s\n
+===========================================\n
+time_total:\t\t%{time_total}s\n
+===========================================\n

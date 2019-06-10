@@ -1,0 +1,17 @@
+*~
+.terraform/
+.terraform.d/
+terraform.tfstate.d
+.DS_Store
+.idea/
+mitogen-*
+.ansible/
+.ansible/*
+platform_build-harness/
+.build-harness
+venv/
+*__pycache__/
+tfplan
+.venv/
+allure-commandline-2.13.9.zip
+.tool-versions
