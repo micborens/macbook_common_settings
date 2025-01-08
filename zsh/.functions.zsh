@@ -1,35 +1,22 @@
-function vlogin {
-  lassPassLogin
-  unset VAULT_TOKEN
-  export VAULT_TOKEN=$(vault login -token-only -method=okta username=michael.borens@contentsquare.com password="$(lpass show okta.com --fixed-strings --password)")
-  echo $VAULT_TOKEN > ~/.vault-token
-}
-
 function varys {
   lassPassLogin
   unset VAULT_ADDR
   unset VAULT_TOKEN
-  echo -n "Choose your varys env (staging/production/mgmt): "
-  read env
-  echo -n "Choose your varys region (eu-west-1/us-east-1/eastus2/northeurope): "
-  read region
-  export VAULT_ADDR="https://varys-${env}.${region}.csq.io"
-  export VAULT_TOKEN=$(vault login -token-only -method=okta username=michael.borens@contentsquare.com password="$(lpass show okta.com --fixed-strings --password)") 
-  echo $VAULT_TOKEN > ~/.vault-token
-}
-
-function oktalogin {
-  lassPassLogin
-#  echo -n "Enter you MFA Code: "
-#  read mfa
-  csq okta set-aws-creds --config $HOME/.config/csq-go-cli.toml -p "$(lpass show okta.com --fixed-strings --password)"
-}
-
-function onelogin () {
-  lassPassLogin
-  echo -n "Enter you MFA Code: "
-  read mfa
-  csq ol login --config $HOME/.config/csq-go-cli.toml -p "$(lpass show onelogin --fixed-strings --password)" --mfa-code "${mfa}"
+  envs=("dev" "staging" "production" "mgmt" "drp" "drptest")
+  regions=("eu-west-1" "us-east-1" "eastus2" "northeurope")
+  selected_env=$(printf '%s\n' "${envs[@]}" | fzf --prompt="Choose your varys env: ")
+  if [[ -z "$selected_env" ]]; then
+    echo "No environment selected. Exiting."
+    return 1
+  fi
+  selected_region=$(printf '%s\n' "${regions[@]}" | fzf --prompt="Choose your varys region: ")
+  if [[ -z "$selected_region" ]]; then
+    echo "No region selected. Exiting."
+    return 1
+  fi
+  export VAULT_ADDR="https://varys-${selected_env}.${selected_region}.csq.io"
+  export VAULT_TOKEN=$(vault login -token-only -method=okta username="" password="$(lpass show okta.com --fixed-strings --password)")
+  echo $VAULT_TOKEN > $HOME/.vault-token
 }
 
 function lassPassLogin {
@@ -48,11 +35,6 @@ function update_providers() {
   fi
 }
 
-function ansible() {
-  gsed -i 's/^strategy =/#strategy =/' ${ANSIBLE_DIR}/ansible.cfg
-  source ${ANSIBLE_DIR}/.venv/bin/activate
-}
-
 function tf_remove_empty_ws() {
     terraform workspace select default
     for WS in $(terraform workspace list | cut -c3-); do
@@ -62,3 +44,4 @@ function tf_remove_empty_ws() {
         fi
     done
 }
+

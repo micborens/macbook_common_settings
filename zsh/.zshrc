@@ -53,7 +53,6 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 plugins=(
   encode64
   extract
-  fd
   fzf
   git
   jsontools
@@ -83,4 +82,6 @@ alias ohmyzsh="mate ~/.oh-my-zsh"
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-. /usr/local/opt/asdf/libexec/asdf.sh
+. /opt/homebrew/opt/asdf/libexec/asdf.sh
+
+eval "$(csq aws sso init-plugin zsh)"
