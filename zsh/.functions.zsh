@@ -22,7 +22,7 @@ function varys {
 function lassPassLogin {
   lpass status > /dev/null
   if [[ $? -eq 1 ]]; then
-    lpass login appo.esl@gmail.com
+    lpass login 
   fi
 }
 
@@ -45,3 +45,24 @@ function tf_remove_empty_ws() {
     done
 }
 
+function update_dir {
+  for dir in */; do
+    if [ -d "$dir/.git" ]; then
+      echo "Processing repository: $dir"
+      cd "$dir" || continue
+      echo "Fetching updates from remote..."
+      git fetch --all --prune
+      default_branch=$(git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@')
+      if [ -z "$default_branch" ]; then
+        echo "No default branch detected in $dir, skipping."
+        cd - > /dev/null
+        continue
+      fi
+      echo "Switching to default branch: $default_branch"
+      git checkout "$default_branch"
+      echo "Updating $default_branch with 'git pull --rebase'"
+      git pull --rebase
+      cd - > /dev/null
+    fi
+  done
+}
